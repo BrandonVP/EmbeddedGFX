@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding ="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+  <PropertyGroup Label="Globals" >
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{7f4c2e10-9b3a-4d6e-8f21-2a5c6b7d8e90}</ItemsProjectGuid>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)src</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Theme.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\UserInterfaceClass.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\appManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\App.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Gui.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\apps\ThemeApp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\EmbeddedGFX.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\gfx_config.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\IDisplay.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\ITouch.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Theme.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\UserInterfaceClass.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\appManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\App.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\Gui.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)src\apps\ThemeApp.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="$(MSBuildThisFileDirectory)keywords.txt" />
+    <Text Include="$(MSBuildThisFileDirectory)library.properties" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)README.md" />
+  </ItemGroup>
+</Project>

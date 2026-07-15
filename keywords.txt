@@ -1,0 +1,42 @@
+#######################################
+# Syntax Coloring Map for EmbeddedGFX
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+EmbeddedGFX	KEYWORD1
+GUI	KEYWORD1
+App	KEYWORD1
+appManager	KEYWORD1
+UserInterfaceClass	KEYWORD1
+IDisplay	KEYWORD1
+ITouch	KEYWORD1
+GfxTheme	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+instance	KEYWORD2
+begin	KEYWORD2
+add	KEYWORD2
+run	KEYWORD2
+drawPage	KEYWORD2
+drawSquareBtn	KEYWORD2
+drawRoundBtn	KEYWORD2
+clearAppSpace	KEYWORD2
+buttonMonitor	KEYWORD2
+subMenuButtonMonitor	KEYWORD2
+updateTouch	KEYWORD2
+setButton	KEYWORD2
+setApp	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+Align_Text_Left	LITERAL1
+Align_Text_Center	LITERAL1
+Align_Text_Right	LITERAL1
