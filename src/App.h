@@ -60,6 +60,9 @@ public:
     gfx_app_id_t getLabel(int index);
     const char* getName(int index);
     gfx_app_id_t getActiveApp();
+    // Menu id the active app belongs to — handy for drawing the active
+    // menu-bar highlight (e.g. on the first page, before any tap).
+    gfx_menu_id_t getActiveMenu();
     void backgroundProcess();
     uint8_t getButtonsOnPage();
     void setButtonsOnPage(uint8_t buttons);

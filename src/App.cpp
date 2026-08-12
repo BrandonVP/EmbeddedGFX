@@ -10,20 +10,17 @@ Description : App registry and render state machine (see App.h).
 #include "Theme.h"
 
 // --- Registration ----------------------------------------------------------
-void App::add(gfx_menu_id_t menu, const char* name, gfx_app_id_t label,
-              void (*appFunc)(int), uint8_t (*printFunc)(void))
+void App::add(gfx_menu_id_t menu, const char* name, gfx_app_id_t label, void (*appFunc)(int), uint8_t (*printFunc)(void))
 {
     myApps.push_back(appManager(menu, name, label, appFunc, printFunc));
 }
 
-void App::add(gfx_menu_id_t menu, const char* name, gfx_app_id_t label,
-              void (*appFunc)(int), uint8_t (*printFunc)(void), void (*animFunc)(void))
+void App::add(gfx_menu_id_t menu, const char* name, gfx_app_id_t label, void (*appFunc)(int), uint8_t (*printFunc)(void), void (*animFunc)(void))
 {
     myApps.push_back(appManager(menu, name, label, appFunc, printFunc, animFunc));
 }
 
-void App::add(gfx_menu_id_t menu, const char* name, gfx_app_id_t label,
-              void (*appFunc)(int), uint8_t (*printFunc)(void), void (*animFunc)(void), bool (*cbFunc)(int))
+void App::add(gfx_menu_id_t menu, const char* name, gfx_app_id_t label, void (*appFunc)(int), uint8_t (*printFunc)(void), void (*animFunc)(void), bool (*cbFunc)(int))
 {
     myApps.push_back(appManager(menu, name, label, appFunc, printFunc, animFunc, cbFunc));
 }
@@ -32,8 +29,7 @@ void App::init()
 {
     // Build id -> index map for O(1) lookup regardless of registration order.
     for (int i = 0; i < 256; i++) appIndexMap[i] = 0xFF;
-    for (int i = 0; i < (int)myApps.size(); i++)
-        appIndexMap[myApps[i].getAppLabel()] = (uint8_t)i;
+    for (int i = 0; i < (int)myApps.size(); i++)appIndexMap[myApps[i].getAppLabel()] = (uint8_t)i;
 
     // Start on the first registered app.
     if (!myApps.empty())
@@ -172,8 +168,7 @@ void App::appTransition()
 
 void App::newApp(gfx_app_id_t loadNewApp)
 {
-    if (loadNewApp != GFX_APP_ID_NONE && appIndexMap[loadNewApp] != 0xFF && loadNewApp != activeApp)
-        nextApp = loadNewApp;
+    if (loadNewApp != GFX_APP_ID_NONE && appIndexMap[loadNewApp] != 0xFF && loadNewApp != activeApp)nextApp = loadNewApp;
 }
 
 int App::getAppSize(void) { return (int)myApps.size(); }
@@ -197,6 +192,12 @@ const char* App::getName(int index)
 }
 
 gfx_app_id_t App::getActiveApp() { return activeApp; }
+
+gfx_menu_id_t App::getActiveMenu()
+{
+    if (appIndexMap[activeApp] == 0xFF) return 0;
+    return (gfx_menu_id_t)getMenu(appIndexMap[activeApp]);
+}
 
 void App::backgroundProcess() { GUI_I.sideLoadBarTimed(); }
 
