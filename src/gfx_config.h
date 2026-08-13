@@ -27,6 +27,19 @@ Description : Compile-time configuration for EmbeddedGFX.
 #define GFX_MENU_BAR_HEIGHT 50   // y < this == menu bar, y >= this == app body
 #endif
 
+// Thickness of the coloured underline strip below the menu bar.
+#ifndef GFX_MENU_STRIP_HEIGHT
+#define GFX_MENU_STRIP_HEIGHT 5
+#endif
+
+// --- App body region (everything below the menu bar) -----------------------
+// Derived from the screen + menu bar, so the library's generated pages (menu
+// grids, theme swatches) fill whatever resolution the project configures — the
+// framework never assumes a fixed 480x320.
+#define GFX_BODY_TOP    (GFX_MENU_BAR_HEIGHT)
+#define GFX_BODY_WIDTH  (GFX_SCREEN_WIDTH)
+#define GFX_BODY_HEIGHT (GFX_SCREEN_HEIGHT - GFX_MENU_BAR_HEIGHT)
+
 // --- Button array sizing ---------------------------------------------------
 // The project allocates the button arrays (so it controls memory placement,
 // e.g. DMAMEM on Teensy) and passes them to GUI::begin(). These are the
@@ -80,24 +93,30 @@ enum textAlignment
 #define CHECK_BIT(var, pos) ((var) & (1 << (pos)))
 #endif
 
-// --- Menu button auto-layout coordinate tables -----------------------------
-// {xStart, yStart, xStop, yStop} for 4 / 6 / 8 button generated menu pages.
-static const uint16_t MENU_4Center[4][4] = {
-    {145,  75, 335, 125}, {145, 135, 335, 185},
-    {145, 195, 335, 245}, {145, 255, 335, 305}
-};
+// --- Grid layout helper ----------------------------------------------------
+// Computes the {x1,y1,x2,y2} rect of cell `index` in a cols x rows grid that
+// fills the app body region, with fixed outer margins and inter-cell gaps.
+// Cells fill row-major (0 = top-left, then left to right). Used for the
+// generated menu pages and the theme swatches, so both scale with the
+// configured resolution instead of using fixed 480x320 tables.
+static inline void gfxGridRect(uint8_t index, uint8_t cols, uint8_t rows,
+                               uint16_t marginX, uint16_t marginY,
+                               uint16_t gapX, uint16_t gapY,
+                               uint16_t& x1, uint16_t& y1, uint16_t& x2, uint16_t& y2)
+{
+    if (cols == 0) cols = 1;
+    if (rows == 0) rows = 1;
 
-static const uint16_t MENU_6Grid[6][4] = {
-    { 45,  95, 230, 145}, {250,  95, 435, 145},
-    { 45, 155, 230, 205}, {250, 155, 435, 205},
-    { 45, 215, 230, 265}, {250, 215, 435, 265}
-};
+    uint16_t cellW = (uint16_t)((GFX_BODY_WIDTH  - 2 * marginX - (cols - 1) * gapX) / cols);
+    uint16_t cellH = (uint16_t)((GFX_BODY_HEIGHT - 2 * marginY - (rows - 1) * gapY) / rows);
 
-static const uint16_t MENU_8Grid[8][4] = {
-    { 45,  75, 230, 125}, {250,  75, 435, 125},
-    { 45, 135, 230, 185}, {250, 135, 435, 185},
-    { 45, 195, 230, 245}, {250, 195, 435, 245},
-    { 45, 255, 230, 305}, {250, 255, 435, 305}
-};
+    uint8_t col = index % cols;
+    uint8_t row = index / cols;
+
+    x1 = (uint16_t)(marginX + col * (cellW + gapX));
+    y1 = (uint16_t)(GFX_BODY_TOP + marginY + row * (cellH + gapY));
+    x2 = (uint16_t)(x1 + cellW);
+    y2 = (uint16_t)(y1 + cellH);
+}
 
 #endif // EMBEDDEDGFX_CONFIG_H

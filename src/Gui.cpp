@@ -190,8 +190,8 @@ void GUI::updateButtonPressVisual(const UserInterfaceClass& btn)
 
         if (isTouchedMenu)
         {
-            drawSquareBtn(0, 45, GFX_SCREEN_WIDTH, 50, "", gfxTheme.menuBorder, gfxTheme.menuBorder, gfxTheme.menuBorder, Align_Text_Center);
-            drawSquareBtn(btn.getXStart(), 45, btn.getXStop(), 50, "", gfxTheme.btnColor, gfxTheme.btnColor, btn.getBorderColor(), Align_Text_Center);
+            drawSquareBtn(0, GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, GFX_SCREEN_WIDTH, GFX_MENU_BAR_HEIGHT, "", gfxTheme.menuBorder, gfxTheme.menuBorder, gfxTheme.menuBorder, Align_Text_Center);
+            drawSquareBtn(btn.getXStart(), GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, btn.getXStop(), GFX_MENU_BAR_HEIGHT, "", gfxTheme.btnColor, gfxTheme.btnColor, btn.getBorderColor(), Align_Text_Center);
         }
     }
 
@@ -211,9 +211,9 @@ void GUI::updateButtonPressVisual(const UserInterfaceClass& btn)
 
         if (isTouchedMenu)
         {
-            drawSquareBtn(btn.getXStart(), 45, btn.getXStop(), 50, "", gfxTheme.btnColor, gfxTheme.btnColor, btn.getBorderColor(), Align_Text_Center);
-            drawSquareBtn(0, 45, GFX_SCREEN_WIDTH, 50, "", gfxTheme.menuBorder, gfxTheme.menuBorder, gfxTheme.menuBorder, Align_Text_Center);
-            drawSquareBtn(btn.getXStart(), 45, btn.getXStop(), 50, "", gfxTheme.btnColor, gfxTheme.btnColor, btn.getBorderColor(), Align_Text_Center);
+            drawSquareBtn(btn.getXStart(), GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, btn.getXStop(), GFX_MENU_BAR_HEIGHT, "", gfxTheme.btnColor, gfxTheme.btnColor, btn.getBorderColor(), Align_Text_Center);
+            drawSquareBtn(0, GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, GFX_SCREEN_WIDTH, GFX_MENU_BAR_HEIGHT, "", gfxTheme.menuBorder, gfxTheme.menuBorder, gfxTheme.menuBorder, Align_Text_Center);
+            drawSquareBtn(btn.getXStart(), GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, btn.getXStop(), GFX_MENU_BAR_HEIGHT, "", gfxTheme.btnColor, gfxTheme.btnColor, btn.getBorderColor(), Align_Text_Center);
         }
         activeBodyButtonIndex = -1;
     }

@@ -99,19 +99,16 @@ static void applyTheme(uint8_t index)
         app->renderState = App::APP_STATE_INIT;
 }
 
-// 2x3 grid of palette swatches.
+// 3-column x 2-row grid of palette swatches, computed to fill the body region.
 uint8_t ThemeApp_createBtns(void)
 {
-    static const uint16_t coords[THEMEAPP_COUNT][4] = {
-        {  10,  62, 157, 172 }, { 167,  62, 314, 172 }, { 324,  62, 471, 172 },
-        {  10, 184, 157, 294 }, { 167, 184, 314, 294 }, { 324, 184, 471, 294 },
-    };
-
     UserInterfaceClass* buttons = GUI_I.appButtons();
     for (uint8_t i = 0; i < THEMEAPP_COUNT; i++)
     {
+        uint16_t x1, y1, x2, y2;
+        gfxGridRect(i, 3, 2, 10, 12, 10, 12, x1, y1, x2, y2);
         uint16_t border = (i == activeTheme) ? 0xFFFF : themes[i].btnBorder;
-        buttons[i].setButton(coords[i][0], coords[i][1], coords[i][2], coords[i][3], i, true, 10, themes[i].name, ALIGN_CENTER, themes[i].btnColor, border, themes[i].btnColor, themes[i].btnText);
+        buttons[i].setButton(x1, y1, x2, y2, i, true, 10, themes[i].name, ALIGN_CENTER, themes[i].btnColor, border, themes[i].btnColor, themes[i].btnText);
     }
     return THEMEAPP_COUNT;
 }

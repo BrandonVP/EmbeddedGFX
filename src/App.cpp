@@ -97,45 +97,33 @@ void App::run()
     }
 }
 
-// Lay out the buttons for a generated menu page. Layout adapts to count.
+// Lay out the buttons for a generated menu page as a grid that fills the app
+// body region, so it scales with the configured resolution. 1 column for up to
+// 4 apps, otherwise 2 columns; rows follow from the count.
 uint8_t App::printMenu(gfx_menu_id_t menu, gfx_app_id_t label, uint8_t numOfButtons)
 {
     UserInterfaceClass* buttons = GUI_I.appButtons();
-    uint8_t btnPos = 0;
-    uint8_t menuCoordIndex = 0;
 
-    if (numOfButtons <= 4)
+    if (numOfButtons > GFX_MAX_BUTTONS_LAYOUT)
+        numOfButtons = GFX_MAX_BUTTONS_LAYOUT;
+
+    uint8_t cols = (numOfButtons <= 4) ? 1 : 2;
+    uint8_t rows = (uint8_t)((numOfButtons + cols - 1) / cols);
+
+    // 1-column pages use a narrow, centered button; 2-column pages fill wider.
+    uint16_t marginX = (cols == 1) ? (uint16_t)(GFX_BODY_WIDTH * 3 / 10) : 45;
+    uint16_t gapX    = (cols == 1) ? 0 : 20;
+
+    uint8_t btnPos = 0;
+    for (int i = 0; i < getAppSize(); i++)
     {
-        for (int i = 0; i < getAppSize(); i++)
+        if (btnPos >= numOfButtons) break;
+        if ((getMenu(i) == menu) && (getLabel(i) != label))
         {
-            if ((getMenu(i) == menu) && (getLabel(i) != label))
-            {
-                buttons[btnPos++].setButton(MENU_4Center[menuCoordIndex][0], MENU_4Center[menuCoordIndex][1], MENU_4Center[menuCoordIndex][2], MENU_4Center[menuCoordIndex][3], getLabel(i), true, 10, getName(i), Align_Text_Center, gfxTheme.btnColor, gfxTheme.btnBorder, gfxTheme.blackBtn, gfxTheme.btnText);
-                menuCoordIndex++;
-            }
-        }
-    }
-    else if (numOfButtons <= 6)
-    {
-        for (int i = 0; i < getAppSize(); i++)
-        {
-            if ((getMenu(i) == menu) && (getLabel(i) != label))
-            {
-                buttons[btnPos++].setButton(MENU_6Grid[menuCoordIndex][0], MENU_6Grid[menuCoordIndex][1], MENU_6Grid[menuCoordIndex][2], MENU_6Grid[menuCoordIndex][3], getLabel(i), true, 10, getName(i), Align_Text_Center, gfxTheme.btnColor, gfxTheme.btnBorder, gfxTheme.blackBtn, gfxTheme.btnText);
-                menuCoordIndex++;
-            }
-        }
-    }
-    else // up to GFX_MAX_BUTTONS_LAYOUT
-    {
-        for (int i = 0; i < getAppSize(); i++)
-        {
-            if (menuCoordIndex >= GFX_MAX_BUTTONS_LAYOUT) break;
-            if ((getMenu(i) == menu) && (getLabel(i) != label))
-            {
-                buttons[btnPos++].setButton(MENU_8Grid[menuCoordIndex][0], MENU_8Grid[menuCoordIndex][1], MENU_8Grid[menuCoordIndex][2], MENU_8Grid[menuCoordIndex][3], getLabel(i), true, 10, getName(i), Align_Text_Center, gfxTheme.btnColor, gfxTheme.btnBorder, gfxTheme.blackBtn, gfxTheme.btnText);
-                menuCoordIndex++;
-            }
+            uint16_t x1, y1, x2, y2;
+            gfxGridRect(btnPos, cols, rows, marginX, 20, gapX, 10, x1, y1, x2, y2);
+            buttons[btnPos].setButton(x1, y1, x2, y2, getLabel(i), true, 10, getName(i), Align_Text_Center, gfxTheme.btnColor, gfxTheme.btnBorder, gfxTheme.blackBtn, gfxTheme.btnText);
+            btnPos++;
         }
     }
 
