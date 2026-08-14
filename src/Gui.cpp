@@ -167,6 +167,33 @@ void GUI::drawSquareBtn(int x_start, int y_start, int x_stop, int y_stop, String
     }
 }
 
+// Vertical gradient via interpolated 1px-high strips (uses fillRect only, so it
+// works on every backend). Cheap; on a framebuffered display it never flickers.
+void GUI::fillGradientV(int x, int y, int w, int h, uint16_t colorTop, uint16_t colorBottom)
+{
+    if (h <= 0 || w <= 0) return;
+
+    int r1 = (colorTop >> 11) & 0x1F, g1 = (colorTop >> 5) & 0x3F, b1 = colorTop & 0x1F;
+    int r2 = (colorBottom >> 11) & 0x1F, g2 = (colorBottom >> 5) & 0x3F, b2 = colorBottom & 0x1F;
+    int denom = (h > 1) ? (h - 1) : 1;
+
+    for (int i = 0; i < h; i++)
+    {
+        int r = r1 + (r2 - r1) * i / denom;
+        int g = g1 + (g2 - g1) * i / denom;
+        int b = b1 + (b2 - b1) * i / denom;
+        m_display->fillRect(x, y + i, w, 1, (uint16_t)((r << 11) | (g << 5) | b));
+    }
+}
+
+// A raised card: an offset shadow rounded-rect behind the filled card.
+void GUI::drawCard(int x, int y, int w, int h, int radius, uint16_t fill, uint16_t shadow, int shadowOffset)
+{
+    if (shadowOffset > 0)
+        m_display->fillRoundRect(x + shadowOffset, y + shadowOffset, w, h, radius, shadow);
+    m_display->fillRoundRect(x, y, w, h, radius, fill);
+}
+
 void GUI::updateButtonPressVisual(const UserInterfaceClass& btn)
 {
     if (touchState == TOUCH_IDLE)

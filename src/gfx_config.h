@@ -93,6 +93,36 @@ enum textAlignment
 #define CHECK_BIT(var, pos) ((var) & (1 << (pos)))
 #endif
 
+// --- Color helper ----------------------------------------------------------
+// Lighten (pct > 0, toward white) or darken (pct < 0, toward black) an RGB565
+// color by |pct| percent. Handy for deriving gradient endpoints and shadow
+// tints from a single theme color.
+static inline uint16_t gfxShade(uint16_t c, int pct)
+{
+    int r = (c >> 11) & 0x1F;
+    int g = (c >> 5) & 0x3F;
+    int b = c & 0x1F;
+
+    if (pct >= 0)
+    {
+        r += ((31 - r) * pct) / 100;
+        g += ((63 - g) * pct) / 100;
+        b += ((31 - b) * pct) / 100;
+    }
+    else
+    {
+        r += (r * pct) / 100;   // pct negative -> reduces
+        g += (g * pct) / 100;
+        b += (b * pct) / 100;
+    }
+
+    if (r < 0) r = 0; else if (r > 31) r = 31;
+    if (g < 0) g = 0; else if (g > 63) g = 63;
+    if (b < 0) b = 0; else if (b > 31) b = 31;
+
+    return (uint16_t)((r << 11) | (g << 5) | b);
+}
+
 // --- Grid layout helper ----------------------------------------------------
 // Computes the {x1,y1,x2,y2} rect of cell `index` in a cols x rows grid that
 // fills the app body region, with fixed outer margins and inter-cell gaps.

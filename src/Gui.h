@@ -70,6 +70,12 @@ public:
     void updateButtonText(int index, const char* newText);
     void drawRoundBtn(int x_start, int y_start, int x_stop, int y_stop, String buttonText, int btnBgColor, int btnBorderColor, int btnTxtColor, int align, int radius);
     void drawSquareBtn(int x_start, int y_start, int x_stop, int y_stop, String buttonText, int btnBgColor, int btnBorderColor, int btnTxtColor, int align);
+
+    // --- Graphics helpers (built on the IDisplay primitives) ---------------
+    // Vertical gradient fill (colorTop at y, blending to colorBottom at y+h-1).
+    void fillGradientV(int x, int y, int w, int h, uint16_t colorTop, uint16_t colorBottom);
+    // A "floating" rounded card: an offset shadow behind a filled rounded rect.
+    void drawCard(int x, int y, int w, int h, int radius, uint16_t fill, uint16_t shadow, int shadowOffset = 3);
     void updateButtonPressVisual(const UserInterfaceClass& btn);
     void buttonMonitor(UserInterfaceClass* buttons, uint16_t size);
     int subMenuButtonMonitor(UserInterfaceClass* buttons, uint8_t size);
