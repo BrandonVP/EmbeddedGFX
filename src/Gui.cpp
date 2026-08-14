@@ -51,10 +51,23 @@ void GUI::updateTouch()
 {
     currentTouch = Touch_getXY();
 
-    if (y <= GFX_MENU_BAR_HEIGHT)
-        setTouchedMenu(true);
-    else
-        setTouchedBody(true);
+    // Classify the touched region only on an actual touch, and keep the two
+    // flags mutually exclusive. Otherwise a stale/boot coordinate (y defaults to
+    // 0, which is <= the menu bar) leaves isTouchedMenu stuck true, which makes a
+    // body-button release paint a menu underline at the body button's x-range.
+    if (currentTouch)
+    {
+        if (y <= GFX_MENU_BAR_HEIGHT)
+        {
+            setTouchedMenu(true);
+            setTouchedBody(false);
+        }
+        else
+        {
+            setTouchedBody(true);
+            setTouchedMenu(false);
+        }
+    }
 
     if (currentTouch && !lastTouch)
         touchState = TOUCH_PRESSED;

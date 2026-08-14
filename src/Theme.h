@@ -28,6 +28,8 @@ struct GfxTheme
     uint16_t frameBorder;   // frameBorder
     uint16_t orangeBtn;     // OrangeBtnColor   — accent / load bar
     uint16_t blackBtn;      // BlackBtnColor
+    uint16_t menuText;      // menu-bar tab text (separate from btnTextColor so a
+                            // dark/coloured bar can use light text over a light body)
 };
 
 // The single active palette. Defined in Theme.cpp, initialized to a dark-blue

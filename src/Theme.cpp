@@ -18,5 +18,6 @@ GfxTheme gfxTheme = {
     /* menuBorder   */ 0x39E8,
     /* frameBorder  */ 0x8452,
     /* orangeBtn    */ 0xFC00,
-    /* blackBtn     */ 0x0000
+    /* blackBtn     */ 0x0000,
+    /* menuText     */ 0xBE18   // = btnTextColor (light) for this dark bar
 };
