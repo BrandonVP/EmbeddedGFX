@@ -359,10 +359,13 @@ bool GUI::drawPage(UserInterfaceClass* buttons, uint8_t& pos, uint8_t buttonsToP
     return (pos > buttonsToPrint) ? false : true;
 }
 
-// Clear the app body (everything below the menu bar).
+// Clear the app body (everything below the menu bar). Uses the display's real
+// height, not GFX_SCREEN_HEIGHT: inside the library that macro is the default
+// (never the project's override), which would leave a taller panel's lower
+// region uncleared.
 void GUI::clearAppSpace()
 {
-    m_display->fillRect(0, GFX_MENU_BAR_HEIGHT, GFX_SCREEN_WIDTH, GFX_SCREEN_HEIGHT - GFX_MENU_BAR_HEIGHT, gfxTheme.background);
+    m_display->fillRect(0, GFX_MENU_BAR_HEIGHT, m_display->width(), m_display->height() - GFX_MENU_BAR_HEIGHT, gfxTheme.background);
 }
 
 void GUI::isButtonsEnabled(UserInterfaceClass* buttons, uint8_t start, uint8_t end, bool isDisabled)

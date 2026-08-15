@@ -43,6 +43,14 @@ public:
     void begin(IDisplay& display, ITouch& touch,
                UserInterfaceClass* appButtons, UserInterfaceClass* menuButtons);
 
+    // Actual panel size, read from the display adapter. Prefer these over the
+    // compile-time GFX_SCREEN_* macros for full-screen work: the macros can be
+    // overridden by a project header the library's own .cpp files never see, so
+    // inside the library they'd fall back to the default and mis-size a taller
+    // panel. The adapter always reports the real hardware dimensions.
+    int screenWidth()  { return m_display->width();  }
+    int screenHeight() { return m_display->height(); }
+
     void setApp(App* app);
     App* getApp() { return appPtr; }
 
