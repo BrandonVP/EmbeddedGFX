@@ -41,8 +41,8 @@ Description : Optional on-screen keyboard app for EmbeddedGFX.
 #define KEYBOARDAPP_MAX_TEXT 64
 
 // App-button slots this page occupies: 40 keys + 4 function + 2 action +
-// title + field.
-#define KEYBOARDAPP_BUTTONS 48
+// title + field + the reveal toggle.
+#define KEYBOARDAPP_BUTTONS 49
 
 // Called once when the user accepts or cancels. `text` is the entry on accept,
 // and the unchanged original on cancel.
@@ -52,7 +52,8 @@ typedef void (*KeyboardDoneFn)(const char* text, bool accepted);
 //   title       shown above the field, e.g. "Password for MyAP" (may be null)
 //   initialText pre-filled entry (may be null)
 //   maxLen      characters allowed, capped at KEYBOARDAPP_MAX_TEXT
-//   maskInput   show asterisks instead of the characters
+//   maskInput   start masked (asterisks). The field then carries a SHOW/HIDE
+//               toggle, so the user can check what they typed
 //   returnApp   app id to switch to once done
 //   onDone      result callback (may be null)
 void KeyboardApp_open(const char* title, const char* initialText, uint8_t maxLen,

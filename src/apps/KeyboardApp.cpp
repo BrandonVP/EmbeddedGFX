@@ -50,6 +50,7 @@ static const char LAYER_CHARS[3][KEY_COUNT + 1] = {
 enum {
     IDX_TITLE = 0,
     IDX_FIELD,
+    IDX_REVEAL,
     IDX_KEY0,
     IDX_SHIFT = IDX_KEY0 + KEY_COUNT,
     IDX_LAYER,
@@ -66,6 +67,7 @@ static const int CR_SHIFT    = 50;
 static const int CR_LAYER    = 51;
 static const int CR_SPACE    = 52;
 static const int CR_DEL      = 53;
+static const int CR_REVEAL   = 54;
 static const int CR_CANCEL   = 60;
 static const int CR_ACCEPT   = 61;
 
@@ -75,14 +77,15 @@ static char           s_original[KEYBOARDAPP_MAX_TEXT + 1];
 static char           s_title[32];
 static uint8_t        s_len = 0;
 static uint8_t        s_maxLen = KEYBOARDAPP_MAX_TEXT;
-static bool           s_mask = false;
+static bool           s_maskable = false;   // caller asked for a masked entry
+static bool           s_mask = false;       // masked right now (SHOW/HIDE)
 static uint8_t        s_layer = LAYER_LOWER;
 static gfx_app_id_t   s_returnApp = 0;
 static KeyboardDoneFn s_onDone = nullptr;
 
 // The field label can only hold what UserInterfaceClass::textBuffer takes, so a
 // long entry shows its tail.
-static const uint8_t FIELD_VISIBLE = 30;
+static const uint8_t FIELD_VISIBLE = 28;
 
 void KeyboardApp_open(const char* title, const char* initialText, uint8_t maxLen,
                       bool maskInput, gfx_app_id_t returnApp, KeyboardDoneFn onDone)
@@ -105,7 +108,8 @@ void KeyboardApp_open(const char* title, const char* initialText, uint8_t maxLen
 
     s_len       = (uint8_t)strlen(s_text);
     s_maxLen    = (maxLen == 0 || maxLen > KEYBOARDAPP_MAX_TEXT) ? KEYBOARDAPP_MAX_TEXT : maxLen;
-    s_mask      = maskInput;
+    s_maskable  = maskInput;
+    s_mask      = maskInput;     // starts hidden; SHOW reveals it
     s_layer     = LAYER_LOWER;
     s_returnApp = returnApp;
     s_onDone    = onDone;
@@ -204,11 +208,27 @@ uint8_t KeyboardApp_createBtns(void)
     b[IDX_TITLE].setTextSize(16);
     b[IDX_TITLE].setClickable(false);
 
-    b[IDX_FIELD].setButton(margin, fy(F_FIELD_TOP), s_width - margin, fy(F_FIELD_BOT),
+    // A masked entry gets a SHOW/HIDE toggle beside the field, so the user can
+    // check a long password before committing to it.
+    const int revealW = 84;
+    const int fieldRight = s_maskable ? (s_width - margin - revealW - gap) : (s_width - margin);
+
+    b[IDX_FIELD].setButton(margin, fy(F_FIELD_TOP), fieldRight, fy(F_FIELD_BOT),
                            0, true, 10, "", ALIGN_LEFT,
                            fill, gfxTheme.btnBorder, gfxTheme.btnTextColor);
     b[IDX_FIELD].setTextSize(16);
     b[IDX_FIELD].setClickable(false);
+
+    b[IDX_REVEAL].setButton(s_width - margin - revealW, fy(F_FIELD_TOP), s_width - margin, fy(F_FIELD_BOT),
+                            CR_REVEAL, true, 10, s_mask ? "SHOW" : "HIDE", ALIGN_CENTER,
+                            gfxTheme.btnColor, gfxTheme.btnBorder, gfxTheme.btnText);
+    b[IDX_REVEAL].setTextSize(16);
+    if (!s_maskable)
+    {
+        // Nothing to reveal: keep the slot, but neither draw nor hit-test it.
+        b[IDX_REVEAL].setPrintable(false);
+        b[IDX_REVEAL].setClickable(false);
+    }
 
     for (uint8_t r = 0; r < KEY_ROWS; r++)
     {
@@ -354,6 +374,15 @@ void KeyboardApp_handler(int userInput)
                 s_text[--s_len] = '\0';
                 refreshField();
             }
+            break;
+
+        case CR_REVEAL:
+            if (!s_maskable)
+                break;
+            s_mask = !s_mask;
+            GUI_I.appButtons()[IDX_REVEAL].setText(s_mask ? "SHOW" : "HIDE");
+            GUI_I.updateButton(IDX_REVEAL);
+            refreshField();
             break;
 
         case CR_CANCEL: finish(false); break;

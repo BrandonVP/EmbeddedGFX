@@ -23,7 +23,9 @@ void UserInterfaceClass::setButton(uint16_t xStart, uint16_t yStart, uint16_t xS
     this->align = Align_Text_Center;
     this->backgroundColor = gfxTheme.btnColor;
     this->borderColor = gfxTheme.btnBorder;
-    this->clickBorderColor = gfxTheme.btnColor;
+    // Press feedback is drawn as a border in this colour, so it has to differ
+    // from both the fill and the resting border or the press is invisible.
+    this->clickBorderColor = gfxTheme.btnTextColor;
     this->textColor = gfxTheme.btnText;
     this->textSize = 11;
     if (btnText)
@@ -49,7 +51,9 @@ void UserInterfaceClass::setButton(uint16_t xStart, uint16_t yStart, uint16_t xS
     this->align = alignText;
     this->backgroundColor = gfxTheme.btnColor;
     this->borderColor = gfxTheme.btnBorder;
-    this->clickBorderColor = gfxTheme.btnColor;
+    // Press feedback is drawn as a border in this colour, so it has to differ
+    // from both the fill and the resting border or the press is invisible.
+    this->clickBorderColor = gfxTheme.btnTextColor;
     this->textColor = gfxTheme.btnText;
     this->textSize = 11;
     if (btnText)
@@ -75,7 +79,8 @@ void UserInterfaceClass::setButton(uint16_t xStart, uint16_t yStart, uint16_t xS
     this->align = alignText;
     this->backgroundColor = btnC;
     this->borderColor = borderC;
-    this->clickBorderColor = borderC;
+    // Not borderC: drawing the resting border over itself shows no press.
+    this->clickBorderColor = gfxTheme.btnTextColor;
     this->textColor = textC;
     this->textSize = 11;
     if (btnText)
