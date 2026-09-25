@@ -13,6 +13,9 @@ Description : GUI framework core for EmbeddedGFX (see Gui.h).
 
 char GUI::printString[14][64];
 
+// Thickness, in pixels, of the ring drawn around a body button while it is held.
+static const int PRESS_RING = 3;
+
 GUI& GUI::instance()
 {
     static GUI instance;
@@ -212,18 +215,25 @@ void GUI::updateButtonPressVisual(const UserInterfaceClass& btn)
     if (touchState == TOUCH_IDLE)
         return;
 
+    const int bx = btn.getXStart(), by = btn.getYStart();
+    const int bw = btn.getXStop() - bx, bh = btn.getYStop() - by;
+
     if (touchState == TOUCH_PRESSED || touchState == TOUCH_HELD)
     {
         m_display->useFrameBuffer(false);
 
-        if (btn.getIsRound())
+        // A single-pixel ring is easy to miss on a large panel, and on a page
+        // whose buttons do not restyle themselves it is the only sign the tap
+        // landed at all. Paint PRESS_RING nested rings instead.
+        if (!isTouchedMenu)
         {
-            if (!isTouchedMenu)
-                m_display->drawRoundRect(btn.getXStart(), btn.getYStart(), btn.getXStop() - btn.getXStart(), btn.getYStop() - btn.getYStart(), btn.getRadius(), btn.getClickBorderColor());
-        }
-        else
-        {
-            m_display->drawRect(btn.getXStart(), btn.getYStart(), btn.getXStop() - btn.getXStart(), btn.getYStop() - btn.getYStart(), btn.getClickBorderColor());
+            for (int i = 0; i < PRESS_RING; i++)
+            {
+                if (btn.getIsRound())
+                    m_display->drawRoundRect(bx + i, by + i, bw - 2 * i, bh - 2 * i, btn.getRadius(), btn.getClickBorderColor());
+                else
+                    m_display->drawRect(bx + i, by + i, bw - 2 * i, bh - 2 * i, btn.getClickBorderColor());
+            }
         }
 
         m_display->useFrameBuffer(true);
@@ -237,14 +247,19 @@ void GUI::updateButtonPressVisual(const UserInterfaceClass& btn)
 
     if (touchState == TOUCH_RELEASED)
     {
-        if (btn.getIsRound())
+        // Undo the press rings exactly: drawRoundBtn lays down two border rings
+        // and drawSquareBtn one, so anything beyond that was fill.
+        if (!isTouchedMenu)
         {
-            if (!isTouchedMenu)
-                m_display->drawRoundRect(btn.getXStart(), btn.getYStart(), btn.getXStop() - btn.getXStart(), btn.getYStop() - btn.getYStart(), btn.getRadius(), btn.getBorderColor());
-        }
-        else
-        {
-            m_display->drawRect(btn.getXStart(), btn.getYStart(), btn.getXStop() - btn.getXStart(), btn.getYStop() - btn.getYStart(), btn.getBorderColor());
+            const int borderRings = btn.getIsRound() ? 2 : 1;
+            for (int i = PRESS_RING - 1; i >= 0; i--)
+            {
+                const uint16_t c = (i < borderRings) ? btn.getBorderColor() : btn.getBtnColor();
+                if (btn.getIsRound())
+                    m_display->drawRoundRect(bx + i, by + i, bw - 2 * i, bh - 2 * i, btn.getRadius(), c);
+                else
+                    m_display->drawRect(bx + i, by + i, bw - 2 * i, bh - 2 * i, c);
+            }
         }
 
         m_display->useFrameBuffer(true);
