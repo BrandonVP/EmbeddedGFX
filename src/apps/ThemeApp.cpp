@@ -29,18 +29,23 @@ struct ThemeColors {
 // menuText is the tab-label color over the menu bar. For dark bars it equals
 // btnTextColor; Snow uses a rich blue bar with white tabs over a light body.
 //
-// Forest keeps its green in the menu bar, its underline and its label text, but
-// its surfaces are neutral slate with a green cast. Every slot used to be a
-// pure #00xx00 with no red or blue at all, which left the whole UI reading as
-// one flat green — and since orangeBtn was #00FF00 there, a *selected* button
-// was green sitting among unselected green ones.
+// Forest and Industrial are both built the same way: neutral surfaces stepping
+// cleanly from background through card and button to border, with the theme's
+// own hue kept to the menu bar, its underline and the label text. That leaves
+// orangeBtn — the "selected" accent for segmented rows, SAVE and ACCEPT — as
+// the only saturated colour in the body, so a selection always reads.
+//
+// Both used to fail that. Forest was pure #00xx00 in nine of eleven slots with
+// orangeBtn set to #00FF00, so a selected button was green among unselected
+// greens. Industrial was Dark Blue's chrome with rust buttons, which put the
+// orange accent in the same hue family as the buttons around it.
 static const ThemeColors themes[THEMEAPP_COUNT] = {
     { 0x424B, 0xFFFF, 0xBE18, 0x869B, 0x0516, 0x5B0E, 0x39E8, 0x8452, 0xFC00, 0x0000, 0xBE18, "Dark Blue" },
     { 0x2945, 0xFFFF, 0xC618, 0x8410, 0x3187, 0x18C3, 0xFD20, 0x8410, 0xFD20, 0x0000, 0xC618, "Carbon"    },
     { 0xFFFF, 0xFFFF, 0x0A4B, 0xC618, 0x2C3A, 0x2C3A, 0x22D1, 0xC618, 0xFC00, 0x0000, 0xFFFF, "Snow"      },
     { 0x10A1, 0xFFFF, 0xAED6, 0x5B8C, 0x3A68, 0x1A65, 0x3D0B, 0x8410, 0xFC00, 0x0000, 0xDF7C, "Forest"    },
     { 0x3A0A, 0xFFFF, 0xCE7B, 0x6B90, 0x2967, 0x1905, 0x4C97, 0x73D0, 0xFC00, 0x0000, 0xCE7B, "Steel"     },
-    { 0x424B, 0xFFFF, 0xBE18, 0x81E0, 0xA240, 0x5B0E, 0x39E8, 0x8452, 0xFC00, 0x0000, 0xBE18, "Industrial"},
+    { 0x1081, 0xFFFF, 0xEED7, 0x6B2B, 0x4A27, 0x8A22, 0xF4C5, 0x8410, 0xFC00, 0x0000, 0xF75B, "Industrial"},
 };
 
 static uint8_t activeTheme = 0;
