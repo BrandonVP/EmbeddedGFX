@@ -63,6 +63,12 @@ public:
 
     bool Touch_getXY();
     void updateTouch();
+
+    // Is the panel being touched as of the last updateTouch()? Unlike the
+    // touched-menu / touched-body flags this is not sticky and is not cleared
+    // by a click, so it is what to poll for "is the user still interacting" —
+    // a backlight timeout, say.
+    bool isTouched() const { return currentTouch; }
     void setTouchedMenu(bool isTouched);
     void setTouchedBody(bool isTouched);
     bool getTouchedMenu();
