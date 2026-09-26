@@ -123,6 +123,25 @@ static inline uint16_t gfxShade(uint16_t c, int pct)
     return (uint16_t)((r << 11) | (g << 5) | b);
 }
 
+// --- Raised-card fill ------------------------------------------------------
+// Fill for a card sitting on the themed background, for UIs that separate the
+// two by tone rather than by drawing a border.
+//
+// Lightening works on a dark theme, but on a light one the background is
+// already at or near white and gfxShade has nowhere left to go — it returns the
+// background unchanged, so the card becomes invisible against it and only its
+// drop shadow shows. On those, the card goes to white instead and the
+// separation comes from the theme's background being a shade off white.
+static inline uint16_t gfxCardFill(uint16_t background)
+{
+    int r8 = (((background >> 11) & 0x1F) * 255) / 31;
+    int g8 = (((background >> 5) & 0x3F) * 255) / 63;
+    int b8 = ((background & 0x1F) * 255) / 31;
+    int lum = (r8 * 77 + g8 * 150 + b8 * 29) >> 8;
+
+    return (lum > 200) ? 0xFFFF : gfxShade(background, 15);
+}
+
 // --- Grid layout helper ----------------------------------------------------
 // Computes the {x1,y1,x2,y2} rect of cell `index` in a cols x rows grid that
 // fills the app body region, with fixed outer margins and inter-cell gaps.
