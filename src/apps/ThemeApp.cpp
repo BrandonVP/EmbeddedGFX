@@ -39,12 +39,21 @@ struct ThemeColors {
 // orangeBtn set to #00FF00, so a selected button was green among unselected
 // greens. Industrial was Dark Blue's chrome with rust buttons, which put the
 // orange accent in the same hue family as the buttons around it.
+//
+// Steel took its body from Dark Blue and its buttons from Carbon, so it read as
+// a blend of its neighbours. It is now the coldest and darkest of the set, and
+// the only one with bright chrome button borders.
+//
+// A caution when adding a theme: orangeBtn sits at luminance ~152, so a palette
+// whose card fill lands near that (a mid-grey body) leaves a selected button
+// with almost no contrast against the card behind it. Cards want to be clearly
+// darker than the accent, or near-white as Snow's are.
 static const ThemeColors themes[THEMEAPP_COUNT] = {
     { 0x424B, 0xFFFF, 0xBE18, 0x869B, 0x0516, 0x5B0E, 0x39E8, 0x8452, 0xFC00, 0x0000, 0xBE18, "Dark Blue" },
     { 0x2945, 0xFFFF, 0xC618, 0x8410, 0x3187, 0x18C3, 0xFD20, 0x8410, 0xFD20, 0x0000, 0xC618, "Carbon"    },
     { 0xFFFF, 0xFFFF, 0x0A4B, 0xC618, 0x2C3A, 0x2C3A, 0x22D1, 0xC618, 0xFC00, 0x0000, 0xFFFF, "Snow"      },
     { 0x10A1, 0xFFFF, 0xAED6, 0x5B8C, 0x3A68, 0x1A65, 0x3D0B, 0x8410, 0xFC00, 0x0000, 0xDF7C, "Forest"    },
-    { 0x3A0A, 0xFFFF, 0xCE7B, 0x6B90, 0x2967, 0x1905, 0x4C97, 0x73D0, 0xFC00, 0x0000, 0xCE7B, "Steel"     },
+    { 0x18E4, 0xFFFF, 0xD6FC, 0xBE3A, 0x4ACD, 0x2166, 0x9E5C, 0x8410, 0xFC00, 0x0000, 0xF7BF, "Steel"     },
     { 0x1081, 0xFFFF, 0xEED7, 0x6B2B, 0x4A27, 0x8A22, 0xF4C5, 0x8410, 0xFC00, 0x0000, 0xF75B, "Industrial"},
 };
 
