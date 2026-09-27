@@ -238,7 +238,14 @@ void GUI::updateButtonPressVisual(const UserInterfaceClass& btn)
 
         m_display->useFrameBuffer(true);
 
-        if (isTouchedMenu)
+        // Menu underline: only on the press itself, never while held.
+        //
+        // This repaints the whole strip and then lays the underline back on top,
+        // and TOUCH_HELD arrives on every loop pass — thousands a second. With
+        // no double buffering the panel keeps scanning the strip out during the
+        // erase, which is seen as the underline flashing under a held tab. The
+        // drawing is identical every pass, so once is enough.
+        if (isTouchedMenu && touchState == TOUCH_PRESSED)
         {
             drawSquareBtn(0, GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, GFX_SCREEN_WIDTH, GFX_MENU_BAR_HEIGHT, "", gfxTheme.menuBorder, gfxTheme.menuBorder, gfxTheme.menuBorder, Align_Text_Center);
             drawSquareBtn(btn.getXStart(), GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, btn.getXStop(), GFX_MENU_BAR_HEIGHT, "", gfxTheme.btnColor, gfxTheme.btnColor, btn.getBorderColor(), Align_Text_Center);
@@ -264,12 +271,12 @@ void GUI::updateButtonPressVisual(const UserInterfaceClass& btn)
 
         m_display->useFrameBuffer(true);
 
-        if (isTouchedMenu)
-        {
-            drawSquareBtn(btn.getXStart(), GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, btn.getXStop(), GFX_MENU_BAR_HEIGHT, "", gfxTheme.btnColor, gfxTheme.btnColor, btn.getBorderColor(), Align_Text_Center);
-            drawSquareBtn(0, GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, GFX_SCREEN_WIDTH, GFX_MENU_BAR_HEIGHT, "", gfxTheme.menuBorder, gfxTheme.menuBorder, gfxTheme.menuBorder, Align_Text_Center);
-            drawSquareBtn(btn.getXStart(), GFX_MENU_BAR_HEIGHT - GFX_MENU_STRIP_HEIGHT, btn.getXStop(), GFX_MENU_BAR_HEIGHT, "", gfxTheme.btnColor, gfxTheme.btnColor, btn.getBorderColor(), Align_Text_Center);
-        }
+        // Nothing to do for the menu on release. It used to draw the underline,
+        // erase the whole strip, then draw it again — the first of those was
+        // dead, and the other two only reproduced what the press already put
+        // there. The strip is left showing the tab that was pressed, which is
+        // the tab about to become active; if that is a change, the project's
+        // menu-bar redraw repaints the whole bar anyway.
         activeBodyButtonIndex = -1;
     }
 }
